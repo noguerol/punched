@@ -14,9 +14,9 @@
 		"session-management"
 	],
 	"license": "MIT",
-	"homepage": "https://github.com/noguerol/punched-memory#readme",
+	"homepage": "https://github.com/noguerol/punched#readme",
 	"bugs": {
-		"url": "https://github.com/noguerol/punched-memory/issues"
+		"url": "https://github.com/noguerol/punched/issues"
 	},
 	"pi": {
 		"extensions": [

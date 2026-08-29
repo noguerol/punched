@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/noguerol/punched-memory/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/></a>
+  <a href="https://github.com/noguerol/punched/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/></a>
   <img src="https://img.shields.io/badge/pi--extension-✓-purple" alt="pi-extension"/>
   <img src="https://img.shields.io/badge/typescript-strict-blue" alt="TypeScript strict"/>
   <img src="https://img.shields.io/badge/i18n-9%20languages-green" alt="9 languages"/>
@@ -61,7 +61,7 @@ auto-prompt back on via `/punched-memory config → Recall prompt`.
 ### One-line install
 
 ```bash
-pi install git:github.com/noguerol/punched-memory
+pi install git:github.com/noguerol/punched
 ```
 
 That's it. Reload pi with `/reload` and `punched` will be active on
@@ -70,8 +70,8 @@ the next session start.
 ### From a local clone (development)
 
 ```bash
-git clone https://github.com/noguerol/punched-memory
-cd punched-memory
+git clone https://github.com/noguerol/punched
+cd punched
 npm install
 ln -sfn "$(pwd)" ~/.pi/agent/extensions/punched-memory
 ```
@@ -280,8 +280,8 @@ The extension goes out of its way to feel warm and friendly:
 ## 🛠️ Development
 
 ```bash
-git clone https://github.com/noguerol/punched-memory
-cd punched-memory
+git clone https://github.com/noguerol/punched
+cd punched
 npm install              # for type-checking only — jiti runs TS directly
 npx tsc --noEmit         # full strict type-check
 ```
