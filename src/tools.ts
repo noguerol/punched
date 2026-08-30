@@ -15,6 +15,7 @@
 import { Type } from "typebox";
 import { StringEnum } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { Text } from "@earendil-works/pi-tui";
 import type { PunchedDoc, DecisionEntry, GotchaEntry, TodoEntry, SessionEntry } from "./pimd.js";
 import { writeDoc } from "./pimd.js";
 
@@ -293,13 +294,13 @@ export function registerTools(pi: ExtensionAPI, opts: {
 		renderCall(args, theme) {
 			const t = theme.fg("toolTitle", theme.bold("punched_log ")) + theme.fg("muted", `${args.type}`);
 			const title = args.title ? ` ${theme.fg("accent", `“${args.title}”`)}` : "";
-			return { render: () => t + title } as never;
+			return new Text(t + title, 0, 0);
 		},
 		renderResult(result, _opts, theme) {
 			const d = result.details as PunchedLogDetails | undefined;
 			const head = theme.fg("success", "✓ ") + theme.fg("muted", d?.added ?? "logged");
 			const preview = d?.preview ? `\n${theme.fg("dim", d.preview)}` : "";
-			return { render: () => head + preview } as never;
+			return new Text(head + preview, 0, 0);
 		},
 	});
 
@@ -353,16 +354,15 @@ export function registerTools(pi: ExtensionAPI, opts: {
 			};
 		},
 		renderCall(args, theme) {
-			return {
-				render: () =>
-					theme.fg("toolTitle", theme.bold("punched_todo ")) +
-					theme.fg("muted", String(args.action)) +
-					(args.text ? ` ${theme.fg("dim", `“${args.text}”`)}` : ""),
-			} as never;
+			const text =
+				theme.fg("toolTitle", theme.bold("punched_todo ")) +
+				theme.fg("muted", String(args.action)) +
+				(args.text ? ` ${theme.fg("dim", `“${args.text}”`)}` : "");
+			return new Text(text, 0, 0);
 		},
 		renderResult(result, { expanded }, theme) {
 			const d = result.details as PunchedTodoDetails | undefined;
-			if (!d) return { render: () => result.content[0]?.type === "text" ? result.content[0].text : "" } as never;
+			if (!d) return new Text(result.content[0]?.type === "text" ? result.content[0].text : "", 0, 0);
 			let text = theme.fg("success", "✓ ") + theme.fg("muted", d.message);
 			if (expanded && d.todos.length) {
 				const visible = d.todos.slice(0, 8);
@@ -373,7 +373,7 @@ export function registerTools(pi: ExtensionAPI, opts: {
 				}
 				if (d.todos.length > visible.length) text += `\n  ${theme.fg("dim", `… ${d.todos.length - visible.length} more`)}`;
 			}
-			return { render: () => text } as never;
+			return new Text(text, 0, 0);
 		},
 	});
 
@@ -445,16 +445,15 @@ export function registerTools(pi: ExtensionAPI, opts: {
 			};
 		},
 		renderCall(args, theme) {
-			return {
-				render: () =>
-					theme.fg("toolTitle", theme.bold("punched_session ")) +
-					theme.fg("muted", String(args.action)) +
-					(args.title ? ` ${theme.fg("accent", `“${args.title}”`)}` : ""),
-			} as never;
+			const text =
+				theme.fg("toolTitle", theme.bold("punched_session ")) +
+				theme.fg("muted", String(args.action)) +
+				(args.title ? ` ${theme.fg("accent", `“${args.title}”`)}` : "");
+			return new Text(text, 0, 0);
 		},
 		renderResult(result, _opts, theme) {
 			const d = result.details as PunchedSessionDetails | undefined;
-			if (!d) return { render: () => result.content[0]?.type === "text" ? result.content[0].text : "" } as never;
+			if (!d) return new Text(result.content[0]?.type === "text" ? result.content[0].text : "", 0, 0);
 			let text = theme.fg("success", "✓ ") + theme.fg("muted", d.message);
 			const counts = [
 				d.decisions.length && `${theme.fg("muted", "🧠")} ${d.decisions.length}`,
@@ -463,7 +462,7 @@ export function registerTools(pi: ExtensionAPI, opts: {
 				d.notes.length && `${theme.fg("muted", "📝")} ${d.notes.length}`,
 			].filter(Boolean);
 			if (counts.length) text += `  ${counts.join("  ")}`;
-			return { render: () => text } as never;
+			return new Text(text, 0, 0);
 		},
 	});
 
@@ -507,10 +506,10 @@ export function registerTools(pi: ExtensionAPI, opts: {
 		},
 		renderResult(result, _opts, theme) {
 			const d = result.details as PunchedRecallDetails | undefined;
-			if (!d) return { render: () => "" } as never;
+			if (!d) return new Text("", 0, 0);
 			const head = theme.fg("success", "✓ ") + theme.fg("muted", `read pi.md (${d.sections} sections${d.truncated ? ", truncated" : ""})`);
 			const preview = d.markdown.split("\n").slice(0, 6).join("\n");
-			return { render: () => head + "\n" + theme.fg("dim", preview) + "\n" + theme.fg("dim", "…") } as never;
+			return new Text(head + "\n" + theme.fg("dim", preview) + "\n" + theme.fg("dim", "…"), 0, 0);
 		},
 	});
 }

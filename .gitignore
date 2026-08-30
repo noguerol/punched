@@ -36,3 +36,6 @@ pi.md.local
 *.tmp
 .env
 .env.local
+
+# punched-memory — never commit project-local memory
+.punched-memory/
