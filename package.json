@@ -14,6 +14,10 @@
 		"session-management"
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/noguerol/punched"
+	},
 	"homepage": "https://github.com/noguerol/punched#readme",
 	"bugs": {
 		"url": "https://github.com/noguerol/punched/issues"
