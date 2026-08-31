@@ -250,15 +250,17 @@ The extension goes out of its way to feel warm and friendly:
 - 🪡 **Needle-and-paper spinner** during every save
   (`["🪡","▪","🪡","▪","🎴","▪"]`)
 - 🎨 **Boxed banner** on session start with project name, session
-  count, language, last-updated timestamp and status pill (🟢 active /
-  ⏸ idle / ⚪ off)
+  count, language, last-updated timestamp and status pill (🪡 (on) /
+  🪡 off)
 - 🧠 **Recall view** — scrollable cards for each past session with
   title, dates, summary, decisions. Press **Enter** to inject the
   selected session into the editor
 - 📋 **Visual menus** — main menu, status panel, recall list, config
   menu with emoji-labelled toggles
 - 🇪🇸 / 🇬🇧 / 🇫🇷 / … — banner headings and intro adapt to the active language
-- ✨ **Footer indicator** (`🪡 punched` / `⏸ punched (idle)` / `⚪ punched (off)`)
+- ✨ **Compact footer indicator** (`🪡 (on)` / `🪡 off`) — same emoji,
+  tiny on/off label; shows `off` when the extension is disabled or no
+  `pi.md` exists yet
 
 ---
 

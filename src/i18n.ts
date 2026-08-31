@@ -58,9 +58,8 @@ const STRINGS_EN = {
 	entry_question: "Open question",
 
 	// TUI labels
-	ui_status_active: "🪡 punched",
-	ui_status_idle: "⏸ punched (idle)",
-	ui_status_disabled: "⚪ punched (off)",
+	ui_status_on: "🪡 (on)",
+	ui_status_off: "🪡 off",
 	ui_banner_title: "🪡 punched-memory",
 	ui_recall_title: "🪡 Previous session(s) detected",
 	ui_recall_summary: (n: number, project: string) =>
@@ -141,9 +140,8 @@ const STRINGS_ES: Partial<Strings> = {
 	entry_note: "Nota",
 	entry_question: "Pregunta abierta",
 
-	ui_status_active: "🪡 punched",
-	ui_status_idle: "⏸ punched (inactivo)",
-	ui_status_disabled: "⚪ punched (apagado)",
+	ui_status_on: "🪡 (on)",
+	ui_status_off: "🪡 off",
 	ui_banner_title: "🪡 punched-memory",
 	ui_recall_title: "🪡 Sesión(es) anterior(es) detectada(s)",
 	ui_recall_summary: (n: number, project: string) =>

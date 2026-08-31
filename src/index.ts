@@ -163,15 +163,10 @@ function updateFooter(ctx: ExtensionContext): void {
 		ctx.ui.setStatus("punched-memory", undefined);
 		return;
 	}
-	if (!state.config.enabled) {
-		ctx.ui.setStatus("punched-memory", t("en", "ui_status_disabled"));
-		return;
-	}
-	if (state.doc) {
-		ctx.ui.setStatus("punched-memory", t(state.language, "ui_status_active"));
-	} else {
-		ctx.ui.setStatus("punched-memory", t(state.language, "ui_status_idle"));
-	}
+	// Compact footer: single emoji + short label. "off" when the extension
+	// is disabled or there's no pi.md yet; "(on)" when memory is active.
+	const on = state.config.enabled && state.doc !== null;
+	ctx.ui.setStatus("punched-memory", on ? t(state.language, "ui_status_on") : t(state.language, "ui_status_off"));
 }
 
 async function showAnimatedBanner(ctx: ExtensionContext): Promise<void> {

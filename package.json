@@ -1,6 +1,6 @@
 {
 	"name": "punched-memory",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Persistent per-directory project memory for the pi coding agent. Keeps a structured pi.md file in each cwd, private & gitignored, that captures scope / decisions / gotchas / todos / session history across sessions.",
 	"type": "module",
 	"keywords": [
