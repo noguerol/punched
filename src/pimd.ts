@@ -11,7 +11,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, isAbsolute, resolve } from "node:path";
 import { mkdirSync } from "node:fs";
 
 import type { LanguageCode } from "./config.js";
@@ -678,38 +678,55 @@ function renderExtras(doc: PunchedDoc): string {
 export function writeDoc(doc: PunchedDoc): void {
 	const lang: LanguageCode = doc.front?.language ?? "en";
 	const projectName = doc.front?.project ?? "Project";
-	mkdirSync(dirname(doc.path), { recursive: true });
+	try {
+		mkdirSync(dirname(doc.path), { recursive: true });
 
-	const parts: string[] = [];
-	const fm = renderFrontMatter(doc);
-	if (fm) parts.push(fm);
-	parts.push(`# ${t(lang, "hdr_project")}`);
-	parts.push("");
-	parts.push(`> ${t(lang, "hdr_intro", projectName)}`);
-	parts.push("");
+		const parts: string[] = [];
+		const fm = renderFrontMatter(doc);
+		if (fm) parts.push(fm);
+		parts.push(`# ${t(lang, "hdr_project")}`);
+		parts.push("");
+		parts.push(`> ${t(lang, "hdr_intro", projectName)}`);
+		parts.push("");
 
-	const scope = renderScope(doc, lang);
-	if (scope) parts.push(scope);
-	const stack = renderStack(doc, lang);
-	if (stack) parts.push(stack);
-	const decisions = renderDecisions(doc, lang);
-	if (decisions) parts.push(decisions);
-	const gotchas = renderGotchas(doc, lang);
-	if (gotchas) parts.push(gotchas);
-	const todos = renderTodos(doc, lang);
-	if (todos) parts.push(todos);
-	const sessions = renderSessions(doc, lang);
-	if (sessions) parts.push(sessions);
-	const extras = renderExtras(doc);
-	if (extras) parts.push(extras);
+		const scope = renderScope(doc, lang);
+		if (scope) parts.push(scope);
+		const stack = renderStack(doc, lang);
+		if (stack) parts.push(stack);
+		const decisions = renderDecisions(doc, lang);
+		if (decisions) parts.push(decisions);
+		const gotchas = renderGotchas(doc, lang);
+		if (gotchas) parts.push(gotchas);
+		const todos = renderTodos(doc, lang);
+		if (todos) parts.push(todos);
+		const sessions = renderSessions(doc, lang);
+		if (sessions) parts.push(sessions);
+		const extras = renderExtras(doc);
+		if (extras) parts.push(extras);
 
-	writeFileSync(doc.path, parts.join("\n") + "\n", "utf8");
-	doc.exists = true;
+		writeFileSync(doc.path, parts.join("\n") + "\n", "utf8");
+		doc.exists = true;
+	} catch (e) {
+		doc.exists = false;
+		throw new Error(`cannot write pi.md at ${doc.path}: ${(e as Error).message}`);
+	}
 }
 
-/** Compute the file path for a given cwd + filename. */
+/** Compute a safe file path for a given cwd + filename. */
 export function piMdPath(cwd: string, filename: string = "pi.md"): string {
-	return join(cwd, filename);
+	const base = resolve(cwd || ".");
+	const name = filename.trim() || "pi.md";
+
+	// `pi.md` is a per-working-directory file. Refuse ambiguous or unsafe
+	// locations instead of accidentally writing `/pi.md` or escaping the cwd.
+	if (dirname(base) === base) {
+		throw new Error("refusing to create pi.md in the filesystem root; start pi from a project directory");
+	}
+	if (isAbsolute(name) || name !== basename(name) || name === "." || name === "..") {
+		throw new Error("invalid pi.md filename: use a simple file name without path separators");
+	}
+
+	return resolve(base, name);
 }
 
 export function touchSessionStart(doc: PunchedDoc, sessionId: string, language: LanguageCode): PunchedSessionMeta {

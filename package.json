@@ -1,6 +1,6 @@
 {
 	"name": "punched-memory",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Persistent per-directory project memory for the pi coding agent. Keeps a structured pi.md file in each cwd, private & gitignored, that captures scope / decisions / gotchas / todos / session history across sessions.",
 	"type": "module",
 	"keywords": [
@@ -38,5 +38,10 @@
 	},
 	"engines": {
 		"node": ">=20"
+	},
+	"scripts": {
+		"build:test": "tsc -p tsconfig.test.json",
+		"test": "npm run build:test && node --test",
+		"check": "tsc --noEmit"
 	}
 }

@@ -35,6 +35,13 @@ summary into the editor, run `/punched session` (or pick the **Recall
 previous sessions** entry from the main menu). You can flip the
 auto-prompt back on via `/punched-memory config → Recall prompt`.
 
+> 🛡️ **Safety guard:** `pi.md` is a per-working-directory file. If pi is
+> started from the filesystem root (`/`) — or the configured filename
+> tries to escape the cwd (`../x.md`, absolute paths, nested paths) —
+> `punched` refuses to touch that location and disables itself for the
+> session with a warning instead of crashing on an `EACCES` write.
+> Start pi from a real project directory to get memory.
+
 ---
 
 ## ✨ Features

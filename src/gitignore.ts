@@ -82,7 +82,13 @@ export function patchGitignore(check: GitignoreCheck, cwd: string): boolean {
 
 	const current = existsSync(check.gitignorePath) ? readFileSync(check.gitignorePath, "utf8") : "";
 	const next = current.endsWith("\n") || current.length === 0 ? current + block : current + "\n" + block;
-	writeFileSync(check.gitignorePath, next, "utf8");
+	try {
+		writeFileSync(check.gitignorePath, next, "utf8");
+	} catch (e) {
+		// Best-effort: a read-only repo must not crash session start.
+		console.warn(`[punched-memory] could not patch .gitignore ${check.gitignorePath}: ${(e as Error).message}`);
+		return false;
+	}
 	return true;
 }
 

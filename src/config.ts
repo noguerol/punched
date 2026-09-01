@@ -98,14 +98,30 @@ export function loadConfig(cwd: string): PunchedConfig {
 	return merged;
 }
 
-export function saveGlobalConfig(cfg: PunchedConfig): void {
-	mkdirSync(dirname(GLOBAL_CONFIG_PATH), { recursive: true });
-	writeFileSync(GLOBAL_CONFIG_PATH, JSON.stringify(cfg, null, 2) + "\n", "utf8");
+export function saveGlobalConfig(cfg: PunchedConfig): boolean {
+	try {
+		mkdirSync(dirname(GLOBAL_CONFIG_PATH), { recursive: true });
+		writeFileSync(GLOBAL_CONFIG_PATH, JSON.stringify(cfg, null, 2) + "\n", "utf8");
+		return true;
+	} catch (e) {
+		// Global config is best-effort: an unwritable config dir must not crash
+		// the extension — defaults keep applying.
+		console.warn(`[punched-memory] could not write global config ${GLOBAL_CONFIG_PATH}: ${(e as Error).message}`);
+		return false;
+	}
 }
 
-export function saveProjectConfig(cwd: string, cfg: PunchedConfig): void {
+export function saveProjectConfig(cwd: string, cfg: PunchedConfig): boolean {
 	const projectPath = join(cwd, PROJECT_CONFIG_FILENAME);
-	writeFileSync(projectPath, JSON.stringify(cfg, null, 2) + "\n", "utf8");
+	try {
+		writeFileSync(projectPath, JSON.stringify(cfg, null, 2) + "\n", "utf8");
+		return true;
+	} catch (e) {
+		// The per-project override is best-effort: failing to write it (e.g. an
+		// unwritable cwd) must not crash the extension — global config still applies.
+		console.warn(`[punched-memory] could not write project config ${projectPath}: ${(e as Error).message}`);
+		return false;
+	}
 }
 
 /** Validate a partial patch and return a sanitized config update. */

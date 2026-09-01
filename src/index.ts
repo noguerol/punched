@@ -137,10 +137,16 @@ async function ensurePunchedDoc(ctx: ExtensionContext, silent = false): Promise<
 		const projectName = deriveProjectName(ctx.cwd);
 		const langCfg = state.config.language;
 		const lang: LanguageCode = langCfg === "auto" ? "en" : langCfg;
-		const doc = createDoc(path, projectName, lang);
-		state.doc = doc;
-		writeDoc(doc);
-		return doc;
+		try {
+			const doc = createDoc(path, projectName, lang);
+			state.doc = doc;
+			writeDoc(doc);
+		} catch (e) {
+			state.doc = null;
+			ctx.ui.notify(`🪡 could not write pi.md: ${(e as Error).message}`, "warning");
+			return null;
+		}
+		return state.doc;
 	}
 
 	// Interactive: ask the user before initialising
@@ -223,7 +229,12 @@ async function offerGitignoreGuard(ctx: ExtensionContext): Promise<void> {
 	const interactive = ctx.mode === "tui" || ctx.mode === "rpc";
 	if (!interactive) {
 		await withLoader(ctx, "Patching .gitignore…", async () => {
-			patchGitignore(check, ctx.cwd);
+			try {
+				patchGitignore(check, ctx.cwd);
+			} catch (e) {
+				// A read-only repo must not crash session start — the guard is best-effort.
+				console.warn(`[punched-memory] could not patch .gitignore: ${(e as Error).message}`);
+			}
 		});
 		return;
 	}
@@ -305,10 +316,21 @@ function detectLanguageFromSession(ctx: ExtensionContext): LanguageCode {
 
 async function startSessionTracking(ctx: ExtensionContext): Promise<void> {
 	state.config = loadConfig(ctx.cwd);
-	state.docPath = piMdPath(ctx.cwd, state.config.filename);
 	state.sessionId = shortSessionId(ctx.sessionManager.getSessionId());
 	state.startedAt = Date.now();
 	state.gitRoot = isGitRepo(ctx.cwd) ? ctx.cwd : null;
+
+	try {
+		state.docPath = piMdPath(ctx.cwd, state.config.filename);
+	} catch (e) {
+		state.docPath = "";
+		state.doc = null;
+		state.config = { ...state.config, enabled: false };
+		state.language = state.config.language === "auto" ? "en" : state.config.language;
+		ctx.ui.notify(`🪡 punched-memory disabled for this cwd: ${(e as Error).message}`, "warning");
+		updateFooter(ctx);
+		return;
+	}
 
 	// Load existing doc (if any)
 	if (existsSync(state.docPath)) {
@@ -565,7 +587,11 @@ function changeLanguage(ctx: ExtensionContext, code: string): void {
 
 	if (state.doc && state.doc.front) {
 		state.doc.front.language = isLanguageCode(lang) ? lang : state.language;
-		writeDoc(state.doc);
+		try {
+			writeDoc(state.doc);
+		} catch (e) {
+			ctx.ui.notify(`🪡 could not save pi.md: ${(e as Error).message}`, "error");
+		}
 	}
 	const display = lang === "auto" ? "🪄 auto" : languageName(lang);
 	ctx.ui.notify(`🪡 language set to ${display}`, "info");
@@ -583,7 +609,12 @@ function appendNote(ctx: ExtensionContext, note: string): void {
 	}
 	const sess = state.doc.sessions[state.doc.sessions.length - 1];
 	if (sess) sess.notes.push(note);
-	writeDoc(state.doc);
+	try {
+		writeDoc(state.doc);
+	} catch (e) {
+		ctx.ui.notify(`🪡 could not save pi.md: ${(e as Error).message}`, "error");
+		return;
+	}
 	ctx.ui.notify(t(state.language, "ui_save_ok"), "info");
 }
 
@@ -673,9 +704,13 @@ export default function (pi: ExtensionAPI) {
 		if (state.config.language !== "auto") return;
 		const detected = detectLanguageFromSession(ctx);
 		if (detected !== state.language && state.doc) {
-			state.language = detected;
-			state.doc.front && (state.doc.front.language = detected);
-			writeDoc(state.doc);
+			try {
+				state.language = detected;
+				state.doc.front && (state.doc.front.language = detected);
+				writeDoc(state.doc);
+			} catch (e) {
+				ctx.ui.notify(`🪡 could not save pi.md: ${(e as Error).message}`, "error");
+			}
 			updateFooter(ctx);
 		}
 	});
