@@ -1,47 +1,47 @@
 {
-	"name": "punched-memory",
-	"version": "1.0.3",
-	"description": "Persistent per-directory project memory for the pi coding agent. Keeps a structured pi.md file in each cwd, private & gitignored, that captures scope / decisions / gotchas / todos / session history across sessions.",
-	"type": "module",
-	"keywords": [
-		"pi-package",
-		"pi-extension",
-		"coding-agent",
-		"ai-memory",
-		"project-memory",
-		"markdown",
-		"developer-tools",
-		"session-management"
-	],
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/noguerol/punched"
-	},
-	"homepage": "https://github.com/noguerol/punched#readme",
-	"bugs": {
-		"url": "https://github.com/noguerol/punched/issues"
-	},
-	"pi": {
-		"extensions": [
-			"./src/index.ts"
-		]
-	},
-	"dependencies": {
-		"@earendil-works/pi-ai": "^0.84.4",
-		"@earendil-works/pi-coding-agent": "^0.84.4",
-		"@earendil-works/pi-tui": "^0.84.4",
-		"typebox": "^1.3.20"
-	},
-	"devDependencies": {
-		"typescript": "^5.6.3"
-	},
-	"engines": {
-		"node": ">=20"
-	},
-	"scripts": {
-		"build:test": "tsc -p tsconfig.test.json",
-		"test": "npm run build:test && node --test",
-		"check": "tsc --noEmit"
-	}
+  "name": "punched-memory",
+  "version": "1.0.4",
+  "description": "Persistent per-directory project memory for the pi coding agent. Keeps a structured pi.md file in each cwd, private & gitignored, that captures scope / decisions / gotchas / todos / session history across sessions.",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "coding-agent",
+    "ai-memory",
+    "project-memory",
+    "markdown",
+    "developer-tools",
+    "session-management"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noguerol/punched"
+  },
+  "homepage": "https://github.com/noguerol/punched#readme",
+  "bugs": {
+    "url": "https://github.com/noguerol/punched/issues"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "^0.84.4",
+    "@earendil-works/pi-coding-agent": "^0.84.4",
+    "@earendil-works/pi-tui": "^0.84.4",
+    "typebox": "^1.3.20"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:test": "tsc -p tsconfig.test.json",
+    "test": "npm run build:test && node --test",
+    "check": "tsc --noEmit"
+  }
 }

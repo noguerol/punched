@@ -23,7 +23,7 @@ export interface PunchedConfig {
 	enabled: boolean;
 	/** Language mode for pi.md content (and some UI strings). */
 	language: LanguageMode;
-	/** Show the animated banner on every session_start. */
+	/** Opt-in: show the animated banner at session_start (default off — keeps boots quiet). */
 	showBanner: boolean;
 	/** When a pi.md already exists, prompt to recall previous sessions. */
 	promptRecall: boolean;
@@ -46,7 +46,10 @@ export interface PunchedConfig {
 export const DEFAULT_CONFIG: PunchedConfig = {
 	enabled: true,
 	language: "auto",
-	showBanner: true,
+	// showBanner is opt-in: the ~2s modal it hosts during session_start otherwise
+	// delays the boot render and (together with custom footers) makes the TUI
+	// footer look duplicated for a moment. Default off; enable via config if wanted.
+	showBanner: false,
 	promptRecall: false,
 	autoGitignore: true,
 	autoLog: true,
